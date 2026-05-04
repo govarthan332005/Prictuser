@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0f0823" />
+<meta name="description" content="Roulette AI — Smart predictions powered by 9 AI models." />
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Roulette AI" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="format-detection" content="telephone=no" />
+
+<title>🎰 Roulette AI · Smart Predictions</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎰%3C/text%3E%3C/svg%3E" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎰%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- Animated background blobs -->
+<div class="bg-blobs" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginScreen" class="screen active">
+  <div class="login-card">
+    <div class="logo-wrap">
+      <div class="logo-emoji">🎰</div>
+      <div class="logo-rings"><span></span><span></span><span></span></div>
+    </div>
+    <h1 class="brand-title">Roulette<span class="dot-ai">AI</span></h1>
+    <p class="subtitle">Smart predictions · 9 AI models · For students &amp; learners 🚀</p>
+
+    <div class="feature-pills">
+      <span class="fp">🧠 9 Models</span>
+      <span class="fp">⚡ Real-time</span>
+      <span class="fp">📊 Insights</span>
+    </div>
+
+    <input type="email" id="email" placeholder="📧 Your email" autocomplete="email" />
+    <input type="password" id="password" placeholder="🔒 Password" autocomplete="current-password" />
+
+    <button id="loginBtn" class="btn btn-primary">Login →</button>
+    <button id="signupBtn" class="btn btn-secondary">✨ Create Free Account</button>
+    <div class="row-split">
+      <button id="guestBtn" class="btn-link">Try as Guest 👀</button>
+      <button id="forgotBtn" class="btn-link">Forgot password?</button>
+    </div>
+    <div id="loginMsg" class="msg"></div>
+
+    <div class="login-foot">
+      <span>v3.1 · Made for curious minds 🎓</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== WELCOME TOUR ===== -->
+<div id="welcomeTour" class="modal hidden">
+  <div class="modal-card tour-card">
+    <div class="tour-step active" data-step="1">
+      <div class="tour-icon">👋</div>
+      <h2>Hey there!</h2>
+      <p>Welcome to <b>Roulette AI</b>! We use <b>9 smart AI models</b> working together to predict the next spin's color &amp; even/odd.</p>
+    </div>
+    <div class="tour-step" data-step="2">
+      <div class="tour-icon">🔢</div>
+      <h2>Tap the numbers</h2>
+      <p>Just tap each number (<b>0–36</b>) as it lands. We'll auto-figure out Even/Odd &amp; Red/Black for you. <b>Easy peasy!</b></p>
+    </div>
+    <div class="tour-step" data-step="3">
+      <div class="tour-icon">🎯</div>
+      <h2>Get instant predictions</h2>
+      <p>After 5+ spins, hit <b>PREDICT</b>. The AI gives a guess with confidence %. Mark it Correct/Wrong &mdash; the engine <b>learns &amp; gets smarter</b>!</p>
+    </div>
+    <div class="tour-step" data-step="4">
+      <div class="tour-icon">🎓</div>
+      <h2>Learn &amp; have fun</h2>
+      <p>This is for <b>study &amp; entertainment</b>. Roulette has a built-in <b>~2.7% house edge</b>. No system beats true randomness &mdash; play smart!</p>
+    </div>
+    <div class="tour-nav">
+      <button id="tourSkip" class="btn-link">Skip</button>
+      <div class="tour-dots">
+        <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+      <button id="tourNext" class="btn btn-primary tour-btn">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app" class="screen">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">🎰</span>
+      <span class="brand-text">Roulette<b>AI</b></span>
+    </div>
+    <div class="topbar-right">
+      <span class="data-pill" id="dataPill" title="Training data">…</span>
+      <button id="settingsBtn" class="btn-icon" title="Settings" aria-label="Settings">⚙</button>
+      <button id="helpBtn" class="btn-icon" title="Help" aria-label="Help">?</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="predict" role="tab"><span class="tab-icon">🎯</span><span>Predict</span></button>
+    <button class="tab" data-tab="track" role="tab"><span class="tab-icon">📡</span><span>Live</span></button>
+    <button class="tab" data-tab="history" role="tab"><span class="tab-icon">📜</span><span>History</span></button>
+    <button class="tab" data-tab="insights" role="tab"><span class="tab-icon">🧠</span><span>Insights</span></button>
+  </nav>
+
+  <main class="content">
+
+    <!-- PREDICT -->
+    <section class="tab-panel active" data-panel="predict">
+      <div class="card hero-card">
+        <div class="card-head">
+          <h2><span class="emoji-bg">🎯</span> Make a Prediction</h2>
+        </div>
+        <p class="hint">Enter at least <b>5 recent spins</b> in order. <button class="inline-help" data-help="predict" type="button">How?</button></p>
+
+        <div class="method-tabs" role="tablist">
+          <button class="method-tab active" data-method="numbers" type="button">
+            <span class="mt-icon">🔢</span><span class="mt-lbl">Numbers</span>
+          </button>
+          <button class="method-tab" data-method="manual" type="button">
+            <span class="mt-icon">⚡</span><span class="mt-lbl">Quick E/O · R/B</span>
+          </button>
+        </div>
+
+        <div class="mode-tabs">
+          <button class="mode-tab active" data-pmode="even_odd" type="button">Even/Odd</button>
+          <button class="mode-tab" data-pmode="color" type="button">Red/Black</button>
+          <button class="mode-tab" data-pmode="both" type="button">Both</button>
+        </div>
+
+        <div class="seq-display" id="seqDisplay" aria-live="polite"></div>
+        <div class="seq-counter">
+          <span class="seq-count-num"><b id="seqCount">0</b> / 10</span>
+          <span class="seq-meter"><span class="seq-fill" id="seqFill"></span></span>
+          <span id="seqStatus" class="seq-status">need 5+</span>
+        </div>
+
+        <!-- NUMBERS METHOD -->
+        <div class="input-method active" data-method-panel="numbers">
+          <p class="method-hint">💡 Tap each number — Even/Odd &amp; Red/Black detected automatically!</p>
+          <div class="number-pad" id="predictPad"></div>
+        </div>
+
+        <!-- MANUAL METHOD -->
+        <div class="input-method" data-method-panel="manual">
+          <p class="method-hint">⚡ Tap the type when you only know color or even/odd.</p>
+          <div class="big-btn-row">
+            <button class="big-btn even" data-manual="E" type="button"><div class="big-btn-num">E</div><div class="big-btn-lbl">EVEN</div></button>
+            <button class="big-btn odd" data-manual="O" type="button"><div class="big-btn-num">O</div><div class="big-btn-lbl">ODD</div></button>
+          </div>
+          <div class="big-btn-row" style="margin-top:10px">
+            <button class="big-btn red" data-manual="R" type="button"><div class="big-btn-num">R</div><div class="big-btn-lbl">RED</div></button>
+            <button class="big-btn black" data-manual="B" type="button"><div class="big-btn-num">B</div><div class="big-btn-lbl">BLACK</div></button>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button id="undoBtn" class="btn btn-ghost" type="button">↶ Undo</button>
+          <button id="clearBtn" class="btn btn-ghost" type="button">✕ Clear</button>
+          <button id="predictBtn" class="btn btn-primary glow" type="button">🔮 PREDICT</button>
+        </div>
+
+        <div class="quick-tools">
+          <button class="qt-btn" id="demoBtn" type="button">🎬 Try Demo</button>
+          <button class="qt-btn" id="kbHintBtn" type="button">⌨ Shortcuts</button>
+        </div>
+      </div>
+
+      <!-- PREDICTION RESULT -->
+      <div id="predictionCard" class="card prediction-card hidden">
+        <div class="pred-header">
+          <span class="pred-label">✨ AI PREDICTION</span>
+          <span class="pred-confidence" id="predConfidence">—</span>
+        </div>
+        <div id="confWarn" class="conf-warn hidden">⚠ Low confidence — model isn't sure</div>
+        <div class="pred-main" id="predMain"></div>
+        <div class="confidence-bar"><div class="confidence-fill" id="confFill"></div></div>
+
+        <div class="model-breakdown">
+          <h3>🧠 9-Model Consensus</h3>
+          <div id="modelBars"></div>
+        </div>
+
+        <div class="prob-grid" id="probGrid"></div>
+
+        <div class="pred-actions">
+          <button class="btn btn-success" id="markCorrectBtn" type="button">✓ Was Correct</button>
+          <button class="btn btn-danger" id="markWrongBtn" type="button">✕ Was Wrong</button>
+        </div>
+
+        <div class="pred-meta" id="predMeta"></div>
+      </div>
+    </section>
+
+    <!-- LIVE TRACK -->
+    <section class="tab-panel" data-panel="track">
+      <div class="card">
+        <div class="card-head">
+          <h2><span class="emoji-bg">📡</span> Live Tracking</h2>
+        </div>
+        <p class="hint">⚡ Continuous mode — every spin instantly updates the next prediction.</p>
+
+        <div class="live-pred" id="livePred">
+          <div class="live-pred-label">🎯 Next Round</div>
+          <div class="live-pred-value" id="liveNext">—</div>
+          <div class="live-pred-conf" id="liveConf">Add 5+ spins to start</div>
+        </div>
+
+        <div class="mode-tabs">
+          <button class="mode-tab active" data-livemode="even_odd" type="button">Even/Odd</button>
+          <button class="mode-tab" data-livemode="color" type="button">Red/Black</button>
+        </div>
+
+        <div class="number-pad" id="livePad"></div>
+
+        <div class="seq-display tall" id="liveSeq" aria-live="polite"></div>
+
+        <div class="action-row two">
+          <button id="liveUndoBtn" class="btn btn-ghost" type="button">↶ Undo</button>
+          <button id="liveClearBtn" class="btn btn-ghost" type="button">✕ Reset</button>
+        </div>
+
+        <div class="live-stats-row">
+          <div class="mini-stat"><span id="liveAcc">—</span><small>Accuracy</small></div>
+          <div class="mini-stat"><span id="liveStreak">—</span><small>Hot Streak</small></div>
+          <div class="mini-stat"><span id="liveTotal">0</span><small>Predictions</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section class="tab-panel" data-panel="history">
+      <div class="card">
+        <div class="card-head">
+          <h2><span class="emoji-bg">📜</span> Your History</h2>
+        </div>
+        <div class="acc-summary">
+          <div class="acc-circle">
+            <svg viewBox="0 0 100 100" aria-hidden="true">
+              <circle cx="50" cy="50" r="45" stroke="rgba(255,255,255,0.08)" stroke-width="8" fill="none"/>
+              <circle id="accRing" cx="50" cy="50" r="45" stroke="url(#accGrad)" stroke-width="8" fill="none"
+                stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+              <defs>
+                <linearGradient id="accGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#a78bfa"/>
+                  <stop offset="50%" stop-color="#ec4899"/>
+                  <stop offset="100%" stop-color="#fbbf24"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="acc-text">
+              <span id="accValue">—</span>
+              <small>Accuracy</small>
+            </div>
+          </div>
+          <div class="acc-meta">
+            <div class="acc-row"><span class="acc-dot total"></span><b id="totalPreds">0</b> Total</div>
+            <div class="acc-row"><span class="acc-dot correct"></span><b id="correctPreds">0</b> Correct</div>
+            <div class="acc-row"><span class="acc-dot wrong"></span><b id="wrongPreds">0</b> Wrong</div>
+            <div class="badges" id="badges"></div>
+          </div>
+        </div>
+
+        <div class="action-row two">
+          <button id="exportHistBtn" class="btn btn-ghost" type="button">⤓ Export CSV</button>
+          <button id="clearHistBtn" class="btn btn-ghost" type="button">🗑 Clear (local)</button>
+        </div>
+
+        <div id="historyList" class="history-list"></div>
+      </div>
+    </section>
+
+    <!-- INSIGHTS -->
+    <section class="tab-panel" data-panel="insights">
+      <div class="card">
+        <div class="card-head">
+          <h2><span class="emoji-bg">🧠</span> Pattern Insights</h2>
+        </div>
+        <p class="hint">📈 Deep analytics from training data + your inputs.</p>
+        <div class="insight-grid">
+          <div class="insight-card stat-1">
+            <div class="insight-title">Training Data</div>
+            <div class="insight-value" id="insTotal">0</div>
+            <div class="insight-sub" id="insSub">spins available</div>
+          </div>
+          <div class="insight-card stat-2">
+            <div class="insight-title">Even Bias</div>
+            <div class="insight-value" id="insEvenBias">—</div>
+            <div class="insight-sub" id="insEvenSub">—</div>
+          </div>
+          <div class="insight-card stat-3">
+            <div class="insight-title">Red Bias</div>
+            <div class="insight-value" id="insRedBias">—</div>
+            <div class="insight-sub" id="insRedSub">—</div>
+          </div>
+          <div class="insight-card stat-4">
+            <div class="insight-title">🔥 Hot 3-Pattern</div>
+            <div class="insight-value small" id="insPattern">—</div>
+            <div class="insight-sub" id="insPatternSub">—</div>
+          </div>
+          <div class="insight-card wide">
+            <div class="insight-title">📊 Distribution Pulse (last 100)</div>
+            <canvas id="pulseCanvas" width="640" height="60"></canvas>
+          </div>
+          <div class="insight-card wide">
+            <div class="insight-title">🔄 Transition Probabilities (E/O)</div>
+            <div class="trans-grid" id="transGrid">
+              <div class="trans-cell"><span>E → E</span><b>—</b></div>
+              <div class="trans-cell"><span>E → O</span><b>—</b></div>
+              <div class="trans-cell"><span>O → E</span><b>—</b></div>
+              <div class="trans-cell"><span>O → O</span><b>—</b></div>
+            </div>
+          </div>
+        </div>
+        <div id="insightsEmpty" class="empty-hint hidden">📊 No data yet. Ask admin to upload training data, or start adding spins!</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Settings Modal -->
+<div id="settingsModal" class="modal hidden">
+  <div class="modal-card">
+    <button class="modal-close" id="settingsClose" type="button" aria-label="Close">✕</button>
+    <h2>⚙ Settings</h2>
+
+    <div class="setting">
+      <div>
+        <div class="setting-name">Confidence threshold</div>
+        <div class="setting-desc">Show warning below this value</div>
+      </div>
+      <div class="setting-control">
+        <input type="range" id="confThreshold" min="50" max="80" step="1" value="55" />
+        <span id="confThresholdVal">55%</span>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div>
+        <div class="setting-name">📳 Vibration</div>
+        <div class="setting-desc">Haptic buzz on tap</div>
+      </div>
+      <div class="setting-control">
+        <label class="switch"><input type="checkbox" id="vibToggle" checked /><span class="slider-sw"></span></label>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div>
+        <div class="setting-name">🔊 Sound effects</div>
+        <div class="setting-desc">Beep on prediction</div>
+      </div>
+      <div class="setting-control">
+        <label class="switch"><input type="checkbox" id="soundToggle" /><span class="slider-sw"></span></label>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div>
+        <div class="setting-name">☕ Break reminder</div>
+        <div class="setting-desc">Pause every 30 min</div>
+      </div>
+      <div class="setting-control">
+        <label class="switch"><input type="checkbox" id="breakToggle" checked /><span class="slider-sw"></span></label>
+      </div>
+    </div>
+
+    <div class="setting">
+      <div>
+        <div class="setting-name">💾 Auto-save</div>
+        <div class="setting-desc">Resume after refresh</div>
+      </div>
+      <div class="setting-control">
+        <label class="switch"><input type="checkbox" id="autoSaveToggle" checked /><span class="slider-sw"></span></label>
+      </div>
+    </div>
+
+    <div class="settings-foot">
+      <div id="userBox" class="user-box">
+        <div class="user-info-line">
+          <span class="user-icon">👤</span>
+          <span id="userBoxEmail">—</span>
+        </div>
+        <button id="signOutBtn" class="btn btn-ghost" type="button">⏻ Sign out</button>
+      </div>
+      <button id="replayTourBtn" class="btn-link" type="button">▶ Replay welcome tour</button>
+    </div>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div id="helpModal" class="modal hidden">
+  <div class="modal-card">
+    <button class="modal-close" id="helpClose" type="button" aria-label="Close">✕</button>
+    <h2>📖 How to Use</h2>
+    <div class="help-section">
+      <h3>1️⃣ Enter your spins</h3>
+      <p>Tap actual roulette numbers (0–36) or use Quick E/O · R/B buttons. Need 5+ spins; <b>10+ is recommended</b>.</p>
+    </div>
+    <div class="help-section">
+      <h3>2️⃣ Pick what to predict</h3>
+      <p><b>Even/Odd</b> · <b>Red/Black</b> · <b>Both</b> — AI predicts the next outcome.</p>
+    </div>
+    <div class="help-section">
+      <h3>3️⃣ Hit PREDICT</h3>
+      <p>9 AI models vote together: <b>Markov, Pattern, Streak, Bayesian, Cyclic, Recency, Bias, Sector, Neural</b>.</p>
+    </div>
+    <div class="help-section">
+      <h3>4️⃣ Confirm result</h3>
+      <p>After the actual spin, tap <b>Was Correct / Was Wrong</b> — the engine learns from your feedback! 🎯</p>
+    </div>
+    <div class="help-section">
+      <h3>📡 Live Track tab</h3>
+      <p>Continuous mode — every entry instantly refreshes the next-round prediction.</p>
+    </div>
+    <div class="help-section">
+      <h3>⌨ Keyboard shortcuts</h3>
+      <p><kbd>0</kbd>–<kbd>9</kbd> single digits · <kbd>E</kbd> <kbd>O</kbd> <kbd>R</kbd> <kbd>B</kbd> manual · <kbd>Enter</kbd> predict · <kbd>⌫</kbd> undo · <kbd>Esc</kbd> close</p>
+    </div>
+    <div class="help-section warn-section">
+      <h3>⚠ Reality check</h3>
+      <p>Roulette has a built-in house edge. <b>No prediction system can guarantee profit.</b> This is for <b>pattern study &amp; entertainment</b>. Never bet money you can't afford to lose. 🎓</p>
+    </div>
+  </div>
+</div>
+
+<!-- Break Reminder -->
+<div id="breakModal" class="modal hidden">
+  <div class="modal-card">
+    <h2>☕ Take a break!</h2>
+    <p style="color:var(--text-2);font-size:14px;line-height:1.7;margin-bottom:18px">
+      You've been playing for <b id="breakDur">30</b> minutes. Short breaks improve focus &amp; prevent fatigue. 🌿
+    </p>
+    <button id="breakClose" class="btn btn-primary" type="button">OK, I'll take a moment 👌</button>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<div id="loader" class="loader hidden" aria-hidden="true">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">🧠 Computing prediction…</div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
