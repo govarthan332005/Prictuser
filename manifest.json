@@ -1,0 +1,24 @@
+{
+  "name": "Roulette Predictor AI",
+  "short_name": "Roulette AI",
+  "description": "5-Model AI ensemble that predicts your next roulette spin (Even/Odd or Red/Black).",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#06081a",
+  "theme_color": "#06081a",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%2306081a'/><text x='50%' y='55%' text-anchor='middle' font-size='128' dominant-baseline='middle'>🎰</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%2306081a'/><text x='50%' y='55%' text-anchor='middle' font-size='340' dominant-baseline='middle'>🎰</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
